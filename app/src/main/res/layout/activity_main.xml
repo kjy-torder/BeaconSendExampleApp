@@ -6,6 +6,9 @@
     <data>
 
         <variable
+            name="activity"
+            type="com.ddeuda.beaconsendexampleapp.MainActivity" />
+        <variable
             name="viewModel"
             type="com.ddeuda.beaconsendexampleapp.MainViewModel" />
     </data>
@@ -67,7 +70,7 @@
                     android:ems="5"
                     android:enabled='@{!viewModel.isRun()}'
                     android:hint="Major"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     android:maxLength="5"
                     android:numeric="integer"
                     android:text="4977"
@@ -84,7 +87,7 @@
                     android:ems="5"
                     android:enabled='@{!viewModel.isRun()}'
                     android:hint="Minor"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     android:maxLength="5"
                     android:numeric="integer"
                     android:text="3638"
@@ -99,7 +102,7 @@
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="128dp"
-                android:onClick='@{viewModel::beaconButtonClick}'
+                android:onClick='@{activity::beaconButtonOnClick}'
                 android:text='@{viewModel.isRun() ? "비콘 신호 발신 중단" : "비콘 신호 발신 시작"}'
                 android:textSize="24sp"
                 android:textStyle="bold" />

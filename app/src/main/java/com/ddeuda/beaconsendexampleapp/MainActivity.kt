@@ -2,6 +2,7 @@ package com.ddeuda.beaconsendexampleapp
 
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseSettings
+import android.bluetooth.le.AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,71 +24,42 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(MainViewModel::class.java)
-
-    private val beaconParser = BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25")
-    private lateinit var beaconTransmitter: BeaconTransmitter
+    private val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application)).get(
+            MainViewModel::class.java
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).apply {
-            lifecycleOwner = this@MainActivity
-            viewModel = mainViewModel.apply {
-                run.observe(this@MainActivity, { run ->
-                    when(run) {
-                        false -> beaconSendStart()
-                        true -> beaconSendStop()
-                    }
-                })
+                lifecycleOwner = this@MainActivity
+                activity = this@MainActivity
+                viewModel = mainViewModel
             }
-        }
+    }
 
-        beaconTransmitter = BeaconTransmitter(applicationContext, beaconParser)
+    fun beaconButtonOnClick(v: View) {
+        when (mainViewModel.isRun.value) {
+            true -> beaconSendStop()
+            false -> beaconSendStart()
+            else -> beaconSendStop()
+        }
     }
 
     private fun beaconSendStart() {
         Log.d("MainActivity", "Beacon Send Start!")
-        try {
-            binding.apply {
-                val beacon = Beacon.Builder()
-                    .setId1("${uuidEditTextText.text}")
-                    .setId2("${majorEditTextText.text}")
-                    .setId3("${minorEditTextText.text}")
-                    .setManufacturer(0x004c)
-                    .setTxPower(-59)
-                    .setDataFields(listOf(0L))
-                    .build()
-
-                beaconTransmitter.startAdvertising(beacon, object : AdvertiseCallback() {
-                    override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-                        super.onStartSuccess(settingsInEffect)
-                        setRun(true)
-                    }
-
-                    override fun onStartFailure(errorCode: Int) {
-                        super.onStartFailure(errorCode)
-                        setRun(false)
-                    }
-                })
-            }
-        } catch (e: Exception) {
-            setRun(false)
+        binding.apply {
+            mainViewModel.beaconStart(
+                uuid = "${uuidEditTextText.text}",
+                major = "${majorEditTextText.text}",
+                minor = "${minorEditTextText.text}"
+            )
         }
     }
 
     private fun beaconSendStop() {
         Log.d("MainActivity", "Beacon Send Stop!")
-
-        try {
-            beaconTransmitter.stopAdvertising()
-            setRun(false)
-        } catch (e: Exception) {
-
-        }
-    }
-
-    private fun setRun(isRun: Boolean) {
-        mainViewModel.setRun(isRun)
+        mainViewModel.beaconStop()
     }
 }

@@ -7,8 +7,8 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.ddeuda.beaconsendexampleapp"
-        minSdk 29
+        applicationId "com.torder.beaconsendexampleapp"
+        minSdk 28
         targetSdk 31
         versionCode 1
         versionName "1.0"
