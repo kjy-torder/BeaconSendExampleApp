@@ -18,8 +18,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isRun = MutableLiveData<Boolean>(false)
     val isRun: LiveData<Boolean> = _isRun
 
+    val iBeaconLayout = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"
     private val beaconParser =
-        BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25")
+        BeaconParser().setBeaconLayout(iBeaconLayout)
+//        BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT)
     private val beaconTransmitter: BeaconTransmitter by lazy {
         BeaconTransmitter(application, beaconParser).apply {
             advertiseMode = AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY  //비콘 송신 주기를 짧게 합니다.

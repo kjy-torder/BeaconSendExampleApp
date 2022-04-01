@@ -40,16 +40,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun beaconButtonOnClick(v: View) {
-        when (mainViewModel.isRun.value) {
-            true -> beaconSendStop()
-            false -> beaconSendStart()
-            else -> beaconSendStop()
-        }
+            when (mainViewModel.isRun.value) {
+                true -> beaconSendStop()
+                else -> beaconSendStart()
+            }
     }
 
     private fun beaconSendStart() {
-        Log.d("MainActivity", "Beacon Send Start!")
         binding.apply {
+            Log.d("MainActivity", "Beacon Send Start! ${minorEditTextText.text}")
             mainViewModel.beaconStart(
                 uuid = "${uuidEditTextText.text}",
                 major = "${majorEditTextText.text}",
